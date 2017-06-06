@@ -1,0 +1,39 @@
+{
+	"nodes":[
+		{
+			"note": "Доступность сервера NS",
+			"type": "ping",
+			"ip":"10.1.2.5",
+			"failstatus": "critical",
+			"nodes": []
+		},
+		{
+			"note": "Доступность основого роутера",
+			"failstatus": "critical",
+			"type": "ping",
+			"ip":"10.1.2.1",
+			"nodes": [
+				{
+					"note": "Доступность роутера Гоголя27",
+					"failstatus": "critical",
+					"type": "ping",
+					"ip":"10.1.6.213",
+					"nodes": [
+						{	"note": "Доступность PPP-соединения на Гоголя27",
+							"type": "ping",
+							"ip":"10.1.12.1",
+							"failstatus": "critical",
+							"nodes": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"sys":{
+		"ping":"/bin/ping"
+	},
+	"path":{
+		"failslog": "./fl.json"
+	}
+}

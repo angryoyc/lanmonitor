@@ -1,7 +1,7 @@
 {
   "name": "lanmonitor",
   "version": "0.0.1",
-  "description": "Простой node-script для отслеживания состояния узлов локальной сети, описанной json-конфигом",
+  "description": "Мониторинг LAN",
   "main": "lanmonitor.js",
   "directories": {
     "test": "test"
@@ -11,10 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://serg@git.settv.ru:1025/opt/git/lanmonitor.git"
+    "url": ""
   },
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "async": "0",
+    "cf": "git+https://github.com/angryoyc/cf.git",
+    "web": "git+https://github.com/angryoyc/web.git"
+  },
   "devDependencies": {},
   "author": "Serg A. Osipov",
   "license": "ISC"
