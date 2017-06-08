@@ -5,9 +5,94 @@ const fs = require("fs");
 const async = require("async");
 const spawn = require('child_process').spawn;
 const ESC = '\x1b[';
-const macros={};
-const fails=[];
+const macros = {};
+const fails = [];
+const points = [{cmd:'{emailviamobile} {email}', order:99}];
 
+
+// START !!!
+loadLastFails(function(lastfailslog, path){ // загружаем журнал предыдущей проверки
+	console.log('Last failslog items count: ' + lastfailslog.length);
+	var index={};
+	if(lastfailslog.length>0){ // если журнал не пустой, то строим индекс
+		lastfailslog.forEach(function(f){
+			index[f.nodeid]=f;
+		});
+	};
+	doNodes(conf, // отрабатываем узлы проверки
+		function(){
+			if(fails.length>0){
+				var newfails = fails.filter(function(f){
+					return !(f.nodeid in index);
+				});
+				if(newfails.length>0){
+					adminNotification(newfails, function(){
+						process.exit(0);
+					}, function(){
+						process.exit(1);
+					});
+				};
+				saveFailsLog(fails, path, function(){
+					process.stdout.write('stop\n');
+				}, function(){process.exit(1)});
+			};
+		},
+		function(err){
+			process.stderr.write(err.message);
+		}
+	);
+});
+
+
+// Оповещение админов о произошедших отказах
+function adminNotification(newfails, callback, callback_err){
+	conf.admins.forEach(function(a){ // Раскидаем отказы по админам
+		a.statuses_index = {};
+		a.statuses.forEach(function(s){ // индексируем статусы
+			a.statuses_index[s] = true;
+		});
+		a.fails = newfails.filter(function(f){ // отбираем для этого админа только отказы с интересующими его статусами
+			return (f.failstatus in a.statuses_index);
+		});
+	});
+	conf.admins.filter(function(a){ // Отправляем оповещения
+		return (a.fails.length>0);
+	}).forEach(function(a){
+
+		while ( a.contacts.length>0 ){
+			var c = a.contacts.shift();
+			var t = (Object.keys(c))[0];
+			var v = c[t];
+			var templ = '{' + t + '}';
+
+			var docommands = points.filter(function(p){
+				return p.cmd.match(templ);
+			}).sort(function(a, b){
+				return (a.order || 0)-(b.order || 0);
+			})
+			.map(function(p){
+				var c = p.cmd.replace(templ, v);
+				c.match(/\{.+?\}/g).forEach(function(t){
+					var sys = t.replace(/^\{/,'').replace(/\}$/,'');
+					if(sys in conf.sys){
+						c=c.replace(t, conf.sys[sys]);
+					}else{
+						c=null;
+					};
+				});
+				return c;
+			}).filter(function(c){return c});
+			if(docommands.length>0){
+				a.docommands = docommands;
+				a.contacts = [];
+			};
+		};
+		console.log(a.fio, a.docommands);
+	});
+};
+
+
+// Загрузка журнала ошибок предыдущей проверки
 function loadLastFails(callback, callback_err){
 	var path = (conf.path?conf.path.failslog:'')  || './failslog.json';
 	console.log('Reading lastfails log file: ' + path);
@@ -23,34 +108,6 @@ function loadLastFails(callback, callback_err){
 	};
 };
 
-loadLastFails(function(lastfailslog, path){
-	console.log('Last failslog items count: ' + lastfailslog.length);
-	var index={};
-	if(lastfailslog.length>0){
-		lastfailslog.forEach(function(f){
-			index[f.nodeid]=f;
-		});
-	};
-	doNodes(conf, 
-		function(){
-			if(fails.length>0){
-				var newfails = fails.filter(function(f){
-					return !(f.nodeid in index);
-				});
-				if(newfails.length>0){
-					process.stdout.write('New fails counter: ' + newfails.length + '\n');
-					process.stdout.write('Need to inform opers\n');
-				}
-				saveFailsLog(fails, path, function(){
-					process.stdout.write('stop\n');
-				}, function(){});
-			};
-		},
-		function(err){
-			process.stderr.write(err.message);
-		}
-	);
-});
 
 function saveFailsLog(fails, path, callback, callback_err){
 	fs.writeFile(path, JSON.stringify(fails), "UTF-8", function(err){
@@ -101,14 +158,19 @@ function doNode(node, callback, callback_err){
 				macros['{ip}'] = node.ip;
 			}else{
 				process.stdout.write(ESC + '31m');
-				fails.push({nodeid:cf.md5(node.type + node.ip), status:result.status, type: node.type, ip:node.ip, dt: new Date()});
+				fails.push({nodeid:cf.md5(node.type + node.ip), failstatus: node.failstatus, type: node.type, ip:node.ip, dt: new Date()});
 			};
 			process.stdout.write(result.status);
 			process.stdout.write(ESC + '0m');
 			if(node.note) process.stdout.write('\t\t# ' + node.note + '\n');
 			callback(result);
 		}, callback_err);
-	}else if(node.type=='ping'){
+	}else if(node.type=='point'){
+		if(node.cmd){
+			process.stdout.write('Add alert point: ' + node.cmd + '\n');
+			points.push({cmd: node.cmd, order: (node.order || 0)});
+		}
+		callback(result);
 	}else{
 		callback(result);
 	};
@@ -122,17 +184,23 @@ function ping(ip, callback, callback_err){
 	ping.stdout.on('data', (r) => {
 		rows.push(r.toString());
 	});
-	ping.stderr.on('data', (err) => {err_mess.push(err.message.toString())});
+	ping.stderr.on('data', (r) => {
+		err_mess.push(r.toString());
+	});
 	ping.on('close', function(code){
 		const lines = rows.join('').split(/\n/).filter(function(r){return r;});
 		const resstring = lines.filter(function(l){
 			return l.match(/packets transmitted.+\d+\% packet loss/);
 		})[0];
-		const m=resstring.match(/(\d+)\% packet loss/);
-		if(m[1]>50){
-			callback('fail');
+		if(resstring){
+			const m=resstring.match(/(\d+)\% packet loss/);
+			if(m[1]>50){
+				callback('fail');
+			}else{
+				callback('ok');
+			};
 		}else{
-			callback('ok');
+			callback('fail');
 		};
 	});
 };
