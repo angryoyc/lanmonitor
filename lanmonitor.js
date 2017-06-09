@@ -1,4 +1,5 @@
 #!/usr/bin/node
+
 const conf = require("./config");
 const cf = require("cf");
 const fs = require("fs");
@@ -7,8 +8,8 @@ const spawn = require('child_process').spawn;
 const ESC = '\x1b[';
 const macros = {};
 const fails = [];
-const points = [{cmd:'{emailviamobile} {email}', order:99}];
-
+//const points = [{cmd:'{emailviamobile} {email}', order:99}];
+const points = conf.predefined || [];
 
 // START !!!
 loadLastFails(function(lastfailslog, path){ // загружаем журнал предыдущей проверки
@@ -55,16 +56,15 @@ function adminNotification(newfails, callback, callback_err){
 			return (f.failstatus in a.statuses_index);
 		});
 	});
-	conf.admins.filter(function(a){ // Отправляем оповещения
+
+	conf.admins.filter(function(a){ // Собираем отказы, группируем по админам подбираем команды
 		return (a.fails.length>0);
 	}).forEach(function(a){
-
 		while ( a.contacts.length>0 ){
 			var c = a.contacts.shift();
 			var t = (Object.keys(c))[0];
 			var v = c[t];
 			var templ = '{' + t + '}';
-
 			var docommands = points.filter(function(p){
 				return p.cmd.match(templ);
 			}).sort(function(a, b){
@@ -82,12 +82,16 @@ function adminNotification(newfails, callback, callback_err){
 				});
 				return c;
 			}).filter(function(c){return c});
-			if(docommands.length>0){
-				a.docommands = docommands;
+ 			if(docommands.length>0){
+				a.docommands = docommands[0];
 				a.contacts = [];
 			};
 		};
-		console.log(a.fio, a.docommands);
+	});
+	conf.admins.filter(function(a){ // Отправляем оповещения
+		return (a.fails.length>0);
+	}).forEach(function(a){
+		
 	});
 };
 
