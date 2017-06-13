@@ -26,16 +26,21 @@ loadLastFails(function(lastfailslog, path){ // загружаем журнал �
 				var newfails = fails.filter(function(f){
 					return !(f.nodeid in index);
 				});
-				if(newfails.length>0){
-					adminNotification(newfails, function(){
-						process.exit(0);
-					}, function(){
-						process.exit(1);
-					});
-				};
+				process.stdout.write('saveFailsLog\n');
 				saveFailsLog(fails, path, function(){
+					if(newfails.length>0){
+						console.log('Есть ошибки');
+						adminNotification(newfails, function(){
+							console.log('adminNotification ok');
+							process.exit(0);
+						}, function(){
+							console.log('adminNotification err');
+							process.exit(1);
+						});
+					};
 					process.stdout.write('stop\n');
 				}, function(){process.exit(1)});
+
 			};
 		},
 		function(err){
@@ -91,10 +96,59 @@ function adminNotification(newfails, callback, callback_err){
 	conf.admins.filter(function(a){ // Отправляем оповещения
 		return (a.fails.length>0);
 	}).forEach(function(a){
-		
+		sendNotification(a.docommands, a.fails, callback, function(err){
+				if(err){
+					console.log(err.join('\n'));
+					callback();
+				}else{
+					callback();
+				}
+		});
+		/*
+		async.forEach(
+			a.docommands,
+			function(c, cb){
+				sendNotification(c, cb, cb);
+			},
+			function(err){
+				if(err){
+					console.log(err.join('\n'));
+					callback();
+				}else{
+					callback();
+				}
+			}
+		);
+		*/
 	});
 };
 
+
+function sendNotification(cmd, fails, callback, callback_err){
+	const params = cmd.split(/\s+/);
+	const prog = params.shift();
+	try{
+		const proc = spawn( prog, params );
+		const rows = [];
+		const err_mess = [];
+		proc.stdout.on('data', (r) => { rows.push(r.toString()); });
+		proc.stderr.on('data', (r) => { err_mess.push(r.toString()); });
+		proc.on('close', function(code){
+			const lines = rows.join('').split(/\n/).filter( function(r){return r;} );
+			if(code>0){
+				console.log(err_mess);
+				callback_err();
+			}else{
+				callback();
+			};
+		});
+		proc.stdin.end(fails.map(function(f){
+			return (f.failstatus + ' - ' + f.type );
+		}).join('\n'));
+	}catch(err){
+		callback_err(['Tool not found: ' + prog, cmd]);
+	};
+};
 
 // Загрузка журнала ошибок предыдущей проверки
 function loadLastFails(callback, callback_err){
@@ -181,7 +235,7 @@ function doNode(node, callback, callback_err){
 };
 
 function ping(ip, callback, callback_err){
-	const params = [ip, '-c', 7];
+	const params = [ip, '-c', 2];
 	const ping = spawn((conf.sys?conf.sys.ping:'') || 'ping' , params);
 	const rows = [];
 	const err_mess = [];
