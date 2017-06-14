@@ -4,10 +4,13 @@ const conf = require("./config");
 const cf = require("cf");
 const fs = require("fs");
 const async = require("async");
-const spawn = require('child_process').spawn;
-const ESC = '\x1b[';
 const macros = {};
 const fails = [];
+const spawn = require('child_process').spawn;
+
+const modules={
+	ping:require("./modules/ping")
+}
 //const points = [{cmd:'{emailviamobile} {email}', order:99}];
 const points = conf.predefined || [];
 
@@ -143,10 +146,10 @@ function sendNotification(cmd, fails, callback, callback_err){
 			};
 		});
 		proc.stdin.end(fails.map(function(f){
-			return (f.failstatus + ' - ' + f.type );
+			return f.module.makeLogRecord(f);
 		}).join('\n'));
 	}catch(err){
-		callback_err(['Tool not found: ' + prog, cmd]);
+		callback_err(['Tool not found? ' + cmd + ' :: ' + err.message]);
 	};
 };
 
@@ -182,9 +185,9 @@ function doNodes(parent, callback, callback_err){
 		async.forEachLimit(
 			parent.nodes, 1,
 			function(node, cb){
-				doNode(node, function(result){
-					if(result.status.toLowerCase()=='ok'){
-						doNodes(node, cb, callback_err)
+				doNode(node, function(status){
+					if(status.toLowerCase()=='ok'){
+						doNodes(node, cb, callback_err);
 					}else{
 						cb();
 					};
@@ -204,36 +207,25 @@ function doNodes(parent, callback, callback_err){
 }
 
 function doNode(node, callback, callback_err){
-	const result = { status:'ok' };
 	if(!node.type){
-		callback(result);
-	}else if(node.type=='ping'){
-		process.stdout.write('Pinging to host ' + node.ip + ' ... ');
-		ping(node.ip, function(ret){
-			result.status = ret;
-			if( result.status == 'ok' ){
-				process.stdout.write(ESC + '32m');
-				macros['{ip}'] = node.ip;
-			}else{
-				process.stdout.write(ESC + '31m');
-				fails.push({nodeid:cf.md5(node.type + node.ip), failstatus: node.failstatus, type: node.type, ip:node.ip, dt: new Date()});
-			};
-			process.stdout.write(result.status);
-			process.stdout.write(ESC + '0m');
-			if(node.note) process.stdout.write('\t\t# ' + node.note + '\n');
-			callback(result);
-		}, callback_err);
+		callback('ok');
 	}else if(node.type=='point'){
 		if(node.cmd){
 			process.stdout.write('Add alert point: ' + node.cmd + '\n');
 			points.push({cmd: node.cmd, order: (node.order || 0)});
 		}
-		callback(result);
+		callback('ok');
+	}else if(node.type in modules){
+		var act = modules[node.type];
+		act.test( node, function(status, testresult){
+			callback(status);
+		}, callback_err, fails);
 	}else{
-		callback(result);
+		callback('fail');
 	};
 };
 
+/*
 function ping(ip, callback, callback_err){
 	const params = [ip, '-c', 2];
 	const ping = spawn((conf.sys?conf.sys.ping:'') || 'ping' , params);
@@ -262,3 +254,4 @@ function ping(ip, callback, callback_err){
 		};
 	});
 };
+*/
