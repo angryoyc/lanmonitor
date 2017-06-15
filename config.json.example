@@ -1,28 +1,76 @@
 {
+	"admins":[
+		{
+			"fio":"Гришановский Андрей Владимирович",
+			"statuses":[
+				"critical video"
+			],
+			"contacts": [
+				{ "mphone": "+79098704723" },
+				{ "email": "serg.osipov@gmail.com" }
+			]
+		},
+		{
+			"fio":"Сергей Осипов",
+			"statuses":[
+				"critical main",
+				"critical video"
+			],
+			"dnd":[
+				"1=00:00-09:00",
+				"2=00:00-09:00",
+				"3=00:00-09:00",
+				"4=00:00-09:00",
+				"5=00:00-09:00",
+				"6=01:00-10:00",
+				"7=01:00-10:00"
+			],
+			"contacts": [
+				{ "sms": "+79098704723" },
+				{ "phone": "+79098704723" },
+				{ "email": "serg.osipov@gmail.com" }
+			]
+		}
+	],
 	"nodes":[
 		{
 			"note": "Доступность сервера NS",
 			"type": "ping",
 			"ip":"10.1.2.5",
-			"failstatus": "critical",
+			"failstatus": "critical main",
 			"nodes": []
 		},
 		{
 			"note": "Доступность основого роутера",
-			"failstatus": "critical",
+			"failstatus": "critical main",
 			"type": "ping",
 			"ip":"10.1.2.1",
 			"nodes": [
+				{ "type": "point", "cmd": "{sendemail} {email}", "order": 0},
+				{
+					"note": "Доступность сервера Macroscop (main - 10.1.3.2)",
+					"type": "ping",
+					"ip":"10.1.3.2",
+					"failstatus": "critical video",
+					"nodes": []
+				},
+				{
+					"note": "Доступность сервера-маршрутизатора на Пушкина (main - 10.1.9.2)",
+					"type": "ping",
+					"ip":"10.1.9.2",
+					"failstatus": "critical main",
+					"nodes": []
+				},
 				{
 					"note": "Доступность роутера Гоголя27",
-					"failstatus": "critical",
+					"failstatus": "critical main",
 					"type": "ping",
-					"ip":"10.1.6.213",
+					"ip": "10.1.6.212",
 					"nodes": [
 						{	"note": "Доступность PPP-соединения на Гоголя27",
 							"type": "ping",
 							"ip":"10.1.12.1",
-							"failstatus": "critical",
+							"failstatus": "critical main",
 							"nodes": []
 						}
 					]
@@ -30,8 +78,14 @@
 			]
 		}
 	],
+	"//": "predefined - список точек выхода, которые существуют изначально на машине на которой происходит тестирование",
+	"predefined":[
+		{ "type": "point", "cmd": "{emailviamobile} {email}", "order": 99 }
+	],
 	"sys":{
-		"ping":"/bin/ping"
+		"ping": "/bin/ping",
+		"emailviamobile": "/home/serg/my/projects/emailviamobile.js",
+		"sendemail": "/home/serg/my/projects/lanmonitor/tools/sendemail.js"
 	},
 	"path":{
 		"failslog": "./fl.json"
