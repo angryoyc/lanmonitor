@@ -225,33 +225,3 @@ function doNode(node, callback, callback_err){
 	};
 };
 
-/*
-function ping(ip, callback, callback_err){
-	const params = [ip, '-c', 2];
-	const ping = spawn((conf.sys?conf.sys.ping:'') || 'ping' , params);
-	const rows = [];
-	const err_mess = [];
-	ping.stdout.on('data', (r) => {
-		rows.push(r.toString());
-	});
-	ping.stderr.on('data', (r) => {
-		err_mess.push(r.toString());
-	});
-	ping.on('close', function(code){
-		const lines = rows.join('').split(/\n/).filter(function(r){return r;});
-		const resstring = lines.filter(function(l){
-			return l.match(/packets transmitted.+\d+\% packet loss/);
-		})[0];
-		if(resstring){
-			const m=resstring.match(/(\d+)\% packet loss/);
-			if(m[1]>50){
-				callback('fail');
-			}else{
-				callback('ok');
-			};
-		}else{
-			callback('fail');
-		};
-	});
-};
-*/

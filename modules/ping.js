@@ -1,5 +1,6 @@
 #!/usr/bin/node
 const cf = require("cf");
+const moment = require("moment");
 const spawn = require('child_process').spawn;
 const ESC = '\x1b[';
 const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
@@ -64,5 +65,17 @@ exports.failDescription=function(conf, data){
 
 // Формирование записи в журнал отказов (на основе данных тестирования)
 exports.makeLogRecord=function(fail){
-	return  fail.dt.toString() +  ' ping to ' + fail.testresult.ip  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' порог: ' + threshold + ' значение: ' + fail.testresult.value + ' status: failed';
+	if(fail.testresult.testno==0){
+		return  format(fail.dt) + ' ping :: ' + fail.failstatus + ' :: ' + fail.testresult.test +  ' ошибка запуска внешней утилиты ' + fail.testresult.value + ' status: failed';
+	}else if(fail.testresult.testno==1){
+		return  format(fail.dt) +  ' ping to ' + fail.testresult.ip  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' нераспознан ' + fail.testresult.value + ' status: failed';
+	}else if(fail.testresult.testno==2){
+		return format(fail.dt) +  ' ping to ' + fail.testresult.ip  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' порог: ' + threshold + ' значение: ' + fail.testresult.value + ' status: failed';
+	}else{
+		return format(fail.dt) +  ' ping status: failed';
+	};
+};
+
+function format(dt){
+	return moment(dt).format("YYYY-MM-DD HH:mm:ss");
 };

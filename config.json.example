@@ -35,5 +35,16 @@
 	},
 	"path":{
 		"failslog": "./fl.json"
+	},
+	"tools":{
+		"sendemail": {
+			"checked": "yandex",
+			"yandex": {
+				"service": "Yandex",
+				"user": "serg.osipov@it-east.ru",
+				"pass": "jlyfrj",
+				"name": "serg@it-east.ru"
+			}
+		}
 	}
 }

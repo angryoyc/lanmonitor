@@ -17,6 +17,8 @@
   "dependencies": {
     "async": "0",
     "cf": "git+https://github.com/angryoyc/cf.git",
+    "delivery": "git+https://github.com/angryoyc/delivery.git",
+    "moment": "^2.18.1",
     "web": "git+https://github.com/angryoyc/web.git"
   },
   "devDependencies": {},
