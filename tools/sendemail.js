@@ -9,7 +9,7 @@ const conf = config.tools['sendemail'][config.tools['sendemail']['checked']];
 var rows = [];
 process.stdin.on('data', function(d){
 	rows.push(d.toString());
-	process.stdin.end();
+//	process.stdin.end();
 });
 
 const email = process.argv[2];
@@ -17,7 +17,7 @@ const email = process.argv[2];
 process.stdin.on('close', function(d){
 	const body = rows.join('');
 	if(email){
-		delivery.mail.send({to: email, subj: 'Оповещение об отказе', text: body || ''}, conf, 2,
+		delivery.mail.send({to: email, subj: config.myname + ': Оповещение об отказе', text: body || ''}, conf, 2,
 			function(result){
 				console.log('ok');
 				process.exit(0);
