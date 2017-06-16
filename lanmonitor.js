@@ -43,7 +43,13 @@ loadLastFails(function(lastfailslog, path){ // загружаем журнал �
 					};
 					process.stdout.write('stop\n');
 				}, function(){process.exit(1)});
-
+			}else{
+				process.stdout.write('removeFailsLog\n');
+				removeFailsLog(
+					path,
+					function(){	process.exit(0)},
+					function(){ process.exit(1)}
+				);
 			};
 		},
 		function(err){
@@ -179,6 +185,16 @@ function saveFailsLog(fails, path, callback, callback_err){
 		};
 	});
 }
+
+function removeFailsLog(path, callback, callback_err){
+	fs.unlink(path, function(err){
+		if(err){
+			callback_err(err);
+		}else{
+			callback();
+		};
+	});
+};
 
 function doNodes(parent, callback, callback_err){
 	if( cf.isArray(parent.nodes) ){
