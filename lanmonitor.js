@@ -9,7 +9,8 @@ const fails = [];
 const spawn = require('child_process').spawn;
 
 const modules={
-	ping:require("./modules/ping")
+	ping:require("./modules/ping"),
+	df:require("./modules/df"),
 }
 //const points = [{cmd:'{emailviamobile} {email}', order:99}];
 const points = conf.predefined || [];
