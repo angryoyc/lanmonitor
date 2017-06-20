@@ -25,7 +25,7 @@ exports.test=function(conf, callback, callback_err, fails){
 			})[0];
 			if(resstring){
 				const m=resstring.match(/(\d+)\% packet loss/);
-				if(m[1]>50){
+				if(m[1]>threshold){
 					process.stdout.write(ESC + '31m');
 					process.stdout.write('fail');
 					process.stdout.write(ESC + '0m');
