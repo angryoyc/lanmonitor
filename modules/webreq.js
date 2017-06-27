@@ -16,7 +16,7 @@ exports.test=function(conf, callback, callback_err, fails){
 				process.stdout.write( ESC + '31m' );
 				process.stdout.write( 'fail' );
 				process.stdout.write( ESC + '0m' );
-				fails.push( exports.failDescription(conf, {testno: 1, test: "Ответ не соответствует ожиданиям", url: conf.url, result: result, wasexpected: conf.result}) );
+				fails.push( exports.failDescription(conf, {testno: 2, test: "Ответ не соответствует ожиданиям", url: conf.url, result: result, wasexpected: conf.result}) );
 				if(conf.note) process.stdout.write( '\t\t# ' + conf.note );
 				process.stdout.write('\n');
 				callback('fail');
@@ -28,7 +28,15 @@ exports.test=function(conf, callback, callback_err, fails){
 				process.stdout.write('\n');
 				callback('ok');
 			};
-		})
+		}, function(err){
+			process.stdout.write( ESC + '31m' );
+			process.stdout.write( 'fail' );
+			process.stdout.write( ESC + '0m' );
+			fails.push( exports.failDescription(conf, {testno: 1, test: "Запрос не выполнен", url: conf.url, message:err.message }) );
+			if(conf.note) process.stdout.write( '\t\t# ' + conf.note );
+			process.stdout.write('\n');
+			callback('fail');
+		});
 	}else{
 		process.stdout.write( ESC + '31m' );
 		process.stdout.write( 'fail' );
@@ -56,13 +64,13 @@ exports.failDescription=function(conf, data){
 // Формирование записи в журнал отказов (на основе данных тестирования)
 exports.makeLogRecord=function(fail){
 	if(fail.testresult.testno==0){
-		return  format(fail.dt) + ' ping :: ' + fail.failstatus + ' :: ' + fail.testresult.test +  ' ошибка запуска внешней утилиты ' + fail.testresult.value + ' status: failed';
+		return  format(fail.dt) + ' webreq :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' status: failed';
 	}else if(fail.testresult.testno==1){
-		return  format(fail.dt) +  ' ping to ' + fail.testresult.ip  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' нераспознан ' + fail.testresult.value + ' status: failed';
+		return  format(fail.dt) +  ' webreq to ' + fail.testresult.url  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ': ' + fail.testresult.message  + ' status: failed';
 	}else if(fail.testresult.testno==2){
-		return format(fail.dt) +  ' ping to ' + fail.testresult.ip  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' порог: ' + threshold + ' значение: ' + fail.testresult.value + ' status: failed';
+		return  format(fail.dt) +  ' webreq to ' + fail.testresult.url  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ': ' + fail.testresult.result  + ' status: failed';
 	}else{
-		return format(fail.dt) +  ' ping status: failed';
+		return format(fail.dt) +  ' webreq status: failed';
 	};
 };
 

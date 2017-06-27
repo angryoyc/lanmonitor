@@ -153,6 +153,11 @@ function sendNotification(cmd, fails, callback, callback_err){
 				callback();
 			};
 		});
+
+		console.log(fails.map(function(f){
+			return f.module.makeLogRecord(f);
+		}).join('\n'));
+
 		proc.stdin.end(fails.map(function(f){
 			return f.module.makeLogRecord(f);
 		}).join('\n'));
