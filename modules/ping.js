@@ -30,13 +30,15 @@ exports.test=function(conf, callback, callback_err, fails){
 					process.stdout.write('fail');
 					process.stdout.write(ESC + '0m');
 					fails.push( exports.failDescription(conf, {testno: 2, test: "Количество потерянных пакетов.", threshold: threshold, value: m[1], ip: conf.ip}) );
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+					if(conf.note) process.stdout.write('\t\t# ' + conf.note );
+					process.stdout.write('\n');
 					callback('fail');
 				}else{
 					process.stdout.write(ESC + '32m');
 					process.stdout.write('ok');
 					process.stdout.write(ESC + '0m');
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+					if(conf.note) process.stdout.write('\t\t# ' + conf.note );
+					process.stdout.write('\n');
 					callback('ok');
 				};
 			}else{

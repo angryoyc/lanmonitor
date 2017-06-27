@@ -17,13 +17,15 @@ exports.test=function(conf, callback, callback_err, fails){
 				process.stdout.write( 'fail' );
 				process.stdout.write( ESC + '0m' );
 				fails.push( exports.failDescription(conf, {testno: 1, test: "Ответ не соответствует ожиданиям", url: conf.url, result: result, wasexpected: conf.result}) );
-				if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+				if(conf.note) process.stdout.write( '\t\t# ' + conf.note );
+				process.stdout.write('\n');
 				callback('fail');
 			}else{
 				process.stdout.write( ESC + '32m' );
 				process.stdout.write( 'ok' );
 				process.stdout.write( ESC + '0m' );
-				if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+				if(conf.note) process.stdout.write('\t\t# ' + conf.note);
+				process.stdout.write('\n');
 				callback('ok');
 			};
 		})
@@ -32,7 +34,8 @@ exports.test=function(conf, callback, callback_err, fails){
 		process.stdout.write( 'fail' );
 		process.stdout.write( ESC + '0m' );
 		fails.push( exports.failDescription(conf, {testno: 0, test: "Формат данных узла" }) );
-		if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+		if(conf.note) process.stdout.write('\t\t# ' + conf.note );
+		process.stdout.write('\n');
 		callback('fail');
 	};
 };
