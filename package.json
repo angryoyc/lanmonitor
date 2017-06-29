@@ -19,8 +19,7 @@
     "cf": "git+https://github.com/angryoyc/cf.git",
     "delivery": "git+https://github.com/angryoyc/delivery.git",
     "web": "git+https://github.com/angryoyc/web.git",
-    "moment": "^2.18.1",
-    "web": "git+https://github.com/angryoyc/web.git"
+    "moment": "^2.18.1"
   },
   "devDependencies": {},
   "author": "Serg A. Osipov",

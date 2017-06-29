@@ -1,4 +1,5 @@
 {
+	"myname": "Server BK",
 	"admins":[
 		{
 			"fio":"Гришановский Андрей Владимирович",
@@ -6,8 +7,8 @@
 				"critical video"
 			],
 			"contacts": [
-				{ "mphone": "+79098704723" },
-				{ "email": "serg.osipov@gmail.com" }
+				{ "mphone": "+79145438893" },
+				{ "email": "gravis214@gmail.com" }
 			]
 		},
 		{
@@ -31,64 +32,231 @@
 				{ "email": "serg.osipov@gmail.com" }
 			]
 		}
+	
 	],
+
 	"nodes":[
 		{
-			"note": "Доступность сервера NS",
-			"type": "ping",
-			"ip":"10.1.2.5",
-			"failstatus": "critical main",
-			"nodes": []
-		},
-		{
-			"note": "Доступность основого роутера",
+			"note": "Доступность основного коммутатора",
 			"failstatus": "critical main",
 			"type": "ping",
-			"ip":"10.1.2.1",
+			"ip": "10.1.1.11",
 			"nodes": [
-				{ "type": "point", "cmd": "{sendemail} {email}", "order": 0},
 				{
-					"note": "Доступность сервера Macroscop (main - 10.1.3.2)",
-					"type": "ping",
-					"ip":"10.1.3.2",
-					"failstatus": "critical video",
-					"nodes": []
-				},
-				{
-					"note": "Доступность сервера-маршрутизатора на Пушкина (main - 10.1.9.2)",
-					"type": "ping",
-					"ip":"10.1.9.2",
-					"failstatus": "critical main",
-					"nodes": []
-				},
-				{
-					"note": "Доступность роутера Гоголя27",
+					"note": "Доступность основого роутера",
 					"failstatus": "critical main",
 					"type": "ping",
-					"ip": "10.1.6.212",
+					"ip":"10.1.2.1",
 					"nodes": [
-						{	"note": "Доступность PPP-соединения на Гоголя27",
+						{
+							"note": "Доступность сервера Google DNS (main - 8.8.8.8)",
 							"type": "ping",
-							"ip":"10.1.12.1",
+							"ip":"8.8.8.8",
 							"failstatus": "critical main",
+							"nodes": [
+								{ "type": "point", "cmd": "{sendemail} {email}", "order": 0}
+							]
+						},
+						{
+							"note": "Доступность коммутатора Оптических линков",
+							"failstatus": "critical main",
+							"type": "ping",
+							"ip": "10.1.1.12",
+							"nodes": [
+
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: подсчет посетителей", "url": "http://admin:admin@10.1.3.60/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: служебный ", "url": "http://10.1.3.61/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Буфет ", "url": "http://10.1.3.62/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Запарина 1 этаж", "url": "http://10.1.3.63/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Центральный вход", "url": "http://admin:223700@10.1.3.106/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 1 этаж вход служебный", "url": "http://admin:223700@10.1.3.107/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: вход в японку", "url": "http://admin:admin@10.1.3.109/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: МДМ2", "url": "http://admin:djkr1@10.1.3.67/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 2 этаж Оливер ", "url": "http://10.1.3.70/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 2 этаж Оливер2", "url": "http://10.1.3.71/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Золото2", "url": "http://admin:djkr1@10.1.3.74/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: ЦУМ 2 этаж", "url": "http://admin:djkr1@10.1.3.75/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 2 этаж со стороны Запарина ", "url": "http://10.1.3.76/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Золото нов ", "url": "http://admin:223700@10.1.3.77/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 2 этаж возле часовой", "url": "http://admin:223700@10.1.3.78/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Детский отдел", "url": "http://admin:djkr1@10.1.3.80/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 3 этаж со служебного ", "url": "http://admin:223700@10.1.3.108/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: 3 этаж 2 зал", "url": "http://admin:223700@10.1.3.82/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Коридор 4 этажа левая сторона", "url": "http://admin:admin@10.1.3.90/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Коридор 4 этажа правая сторона", "url": "http://admin:223700@10.1.3.91/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Лифт 4 этаж ", "url": "http://10.1.3.92/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Задняя стоянка", "url": "http://admin:admin@10.1.3.100/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Шлагбаум ЦУМ", "url": "http://admin:@10.1.3.101/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Двор левая", "url": "http://admin:admin@10.1.3.102/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Марш тыл ", "url": "http://admin:admin@10.1.3.104/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Кпп номера ", "url": "http://admin:admin@10.1.3.105/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Каро Дзержинского ", "url": "http://admin:admin@10.1.3.41/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Каро на кпп", "url": "http://admin:admin@10.1.3.42/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: В сторону Гиганта ", "url": "http://admin:admin@10.1.3.43/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: стоянка ул. Дзержинского", "url": "http://admin:admin@10.1.3.44/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: приямок на Gallery", "url": "http://admin:admin@10.1.3.46/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Фасад сотовый мир", "url": "http://admin:admin@10.1.3.47/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Служебный вход улица", "url": "http://admin:admin@10.1.3.48/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Ворота", "url": "http://10.1.3.49/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Хозтовары", "url": "http://admin:admin@10.1.3.52/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: От доски почета вход в Цум", "url": "http://admin:admin@10.1.3.54/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: приямок на доску почёта", "url": "http://admin:admin@10.1.3.56/" },
+								{ "failstatus": "critical main", "nodes": [], "type": "webreq", "note": "Камера: Цум кпп", "url": "http://admin:223700@10.1.3.64/" },
+
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: КПП", "url": "http://admin:223700@10.1.4.10" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: фасад тыл", "url": "http://admin:223700@10.1.4.11" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: на сбербанк", "url": "http://admin:223700@10.1.4.12" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: ц.Вход", "url": "http://admin:223700@10.1.4.13" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: фасад Б.Центр", "url": "http://admin:223700@10.1.4.14" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Бургер левая", "url": "http://admin:223700@10.1.4.15" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Бургер правая", "url": "http://admin:223700@10.1.4.16" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: фасад Б.Центр л.", "url": "http://admin:223700@10.1.4.17" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: куполка", "url": "http://admin:223700@10.1.4.18" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: на двор-стоянка", "url": "http://admin:223700@10.1.4.40" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: шлагбаум", "url": "http://admin:223700@10.1.4.19" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Эстакада", "url": "http://admin:223700@10.1.4.20" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Стоянка сбербанка", "url": "http://admin:223700@10.1.4.21" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: вход в бургер-пиццерия", "url": "http://admin:223700@10.1.4.41" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Хол у туалета", "url": "http://admin:223700@10.1.4.22" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: центральный вход (фойе)", "url": "http://admin:223700@10.1.4.42" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: центральная лестница", "url": "http://admin:223700@10.1.4.43" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: правый коридор", "url": "http://admin:223700@10.1.4.44" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: правый коридор (на центр)", "url": "http://admin:223700@10.1.4.45" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 2 эт. на лестницу правая", "url": "http://admin:223700@10.1.4.23" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 3эт. лестница центральная", "url": "http://admin:223700@10.1.4.46" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 3эт. лестница левая (сбербанк)", "url": "http://admin:223700@10.1.4.47" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5эт. центр", "url": "http://admin:223700@10.1.4.48" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. на левое крыло", "url": "http://admin:223700@10.1.4.49" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. на лестницу левая", "url": "http://admin:223700@10.1.4.50" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. левый флигель", "url": "http://admin:223700@10.1.4.51" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. центральная лестница", "url": "http://admin:223700@10.1.4.52" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. лифт правый", "url": "http://admin:223700@10.1.4.53" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5 эт. правое крыло", "url": "http://admin:223700@10.1.4.54" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 5эт. прафый флигель", "url": "http://admin:223700@10.1.4.55" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 этаж", "url": "http://admin:223700@10.1.4.56" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. левое крыло", "url": "http://admin:223700@10.1.4.58" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. лестница администрация", "url": "http://admin:223700@10.1.4.59" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. правое крыло", "url": "http://admin:223700@10.1.4.24" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. лестница левая (сбер.банк)", "url": "http://admin:223700@10.1.4.25" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. ц. вход", "url": "http://admin:223700@10.1.4.26" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. лифт левое крыло", "url": "http://admin:223700@10.1.4.27" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. левая мансарда", "url": "http://admin:223700@10.1.4.28" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: 4 эт. центральная лестница", "url": "http://admin:223700@10.1.4.57" },
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: БЦ КПП", "url": "http://admin:223700@10.1.4.60" },
+
+								{ "failstatus": "critical video", "nodes": [], "type": "webreq", "note": "Камера: Гоголя 27", "url": "http://admin:@10.1.2.142" }
+
+							]
+						},
+						{
+							"note": "Доступность коммутатора в помещении лифтовой",
+							"failstatus": "critical main",
+							"type": "ping",
+							"ip": "10.1.1.14",
 							"nodes": []
+						},
+						{
+							"note": "Доступность коммутатора клиентских подключений",
+							"failstatus": "critical main",
+							"type": "ping",
+							"ip": "10.1.1.10",
+							"nodes": []
+						},
+						{
+							"note": "Доступность сервера Macroscop (main - 10.1.3.2)",
+							"type": "ping",
+							"ip":"10.1.3.2",
+							"failstatus": "critical video",
+							"nodes": []
+						},
+						{
+							"note": "Доступность сервера-маршрутизатора на Пушкина (main - 10.1.9.2)",
+							"type": "ping",
+							"ip":"10.1.9.2",
+							"failstatus": "critical main",
+							"nodes": [
+								{
+									"note": "Доступность интерфейса сервера-маршрутизации на Пушкина, смотрящего в видео сеть (main - 10.1.4.2)",
+									"type": "ping",
+									"ip":"10.1.4.2",
+									"failstatus": "critical video",
+									"nodes": []
+								},
+								{
+									"note": "Доступность сервера Macroscop (main - 10.1.4.3)",
+									"type": "ping",
+									"ip":"10.1.4.3",
+									"failstatus": "critical video",
+									"nodes": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"note": "Доступность сервера KVMSYS2",
+					"type": "ping",
+					"ip":"10.1.2.181",
+					"failstatus": "critical main",
+					"nodes": []
+				},
+				{
+					"note": "Доступность сервера KVMSYS1",
+					"type": "ping",
+					"ip":"10.1.2.169",
+					"failstatus": "critical main",
+					"nodes": [
+						{
+							"note": "Доступность сервера NS",
+							"type": "ping",
+							"ip": "10.1.2.5",
+							"failstatus": "critical main",
+							"nodes": [
+								{
+									"note": "Наш вебсервер",
+									"type": "webreq",
+									"url": "http://ws.holding.priv/",
+									"failstatus": "critical main",
+									"nodes": []
+								},
+								{
+									"note": "Свободное место на устройстве 10.1.2.5:/dev/vda1 ",
+									"type": "df",
+									"ssh": "10.1.2.5",
+									"blk": "/dev/vda1",
+									"threshold": "80",
+									"failstatus": "critical main",
+									"nodes": []
+								},
+								{
+									"note": "Свободное место на устройстве 10.1.2.5:/dev/vdb ",
+									"type": "df",
+									"ssh": "10.1.2.5",
+									"blk": "/dev/vdb",
+									"threshold": "80",
+									"failstatus": "critical main",
+									"nodes": []
+								}
+							]
 						}
 					]
 				}
 			]
 		}
 	],
-	"//": "predefined - список точек выхода, которые существуют изначально на машине на которой происходит тестирование",
+
+	"//": "predefined - список точек выхода, которые существуют изначально на машине на которой происходит тестировани",
 	"predefined":[
 		{ "type": "point", "cmd": "{emailviamobile} {email}", "order": 99 }
 	],
 	"sys":{
 		"ping": "/bin/ping",
-		"emailviamobile": "/home/serg/my/projects/emailviamobile.js",
-		"sendemail": "/home/serg/my/projects/lanmonitor/tools/sendemail.js"
+		"emailviamobile": "/home/serg/my/projects/lanmonitor/tools/emailviamobile.js",
+		"sendemail": "/home/serg/my/projects/lanmonitor/tools/sendemail.js",
+		"wvdial": "/usr/bin/wvdial"
 	},
 	"path":{
-		"failslog": "./fl.json"
+		"failslog": "/home/serg/my/projects/lanmonitor/fl.json"
 	},
 	"tools":{
 		"sendemail": {
