@@ -11,9 +11,12 @@ const spawn = require('child_process').spawn;
 const modules={
 	ping:   require("./modules/ping"),
 	df:     require("./modules/df"),
-	webreq: require("./modules/webreq")
+	webreq: require("./modules/webreq"),
+	drbd: require("./modules/drbd")
 }
+
 //const points = [{cmd:'{emailviamobile} {email}', order:99}];
+
 const points = conf.predefined || [];
 
 // START !!!
@@ -107,6 +110,7 @@ function adminNotification(newfails, callback, callback_err){
 	conf.admins.filter(function(a){ // Отправляем оповещения
 		return (a.fails.length>0);
 	}).forEach(function(a){
+		console.log('sendNotification');
 		sendNotification(a.docommands, a.fails, callback, function(err){
 				if(err){
 					console.log(err.join('\n'));

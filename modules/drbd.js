@@ -3,22 +3,46 @@ const cf = require("cf");
 const moment = require("moment");
 const spawn = require('child_process').spawn;
 const ESC = '\x1b[';
-const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
 
 exports.test=function(conf, callback, callback_err, fails){
-	const params = [conf.ssh, 'df'];
+	const params = [conf.ssh, 'cat /proc/drbd | grep [0-9]\:'];
 	try{
 		const ssh = spawn((conf.sys?conf.sys.ssh:'') || 'ssh' , params);
 		const rows = [];
 		const err_mess = [];
-		process.stdout.write('Test free space on ' + conf.ssh + ' : '  + conf.blk + ' ...');
+		process.stdout.write('Test DRBD-status on ' + conf.ssh + ' ...');
 		ssh.stdout.on('data', (r) => {
-			rows.push(r.toString());
+			var a = r.toString().split(/\n/);
+			while(a.length>0){
+				var s=a.shift();
+				if(s) rows.push(s);
+			};
 		});
 		ssh.stderr.on('data', (r) => {
 			err_mess.push(r.toString());
 		});
 		ssh.on('close', function(code){
+			//console.log(rows);
+			var ok_counter = rows.filter(function(s){
+				return s.match(/UpToDate\/UpToDate/);
+			}).length;
+			if(ok_counter < rows.length){
+				//fail
+				process.stdout.write(ESC + '31m');
+				process.stdout.write('fail');
+				process.stdout.write(ESC + '0m');
+				fails.push( exports.failDescription(conf, {testno: 2, test: "DRBD-стаtus", ssh: conf.ssh}) );
+				if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+				callback('fail');
+			}else{
+				//ok
+				process.stdout.write(ESC + '32m');
+				process.stdout.write('ok');
+				process.stdout.write(ESC + '0m');
+				if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+				callback('ok');
+			};
+			/*
 			const lines = rows.join('').split(/\n/).filter(function(r){return r;}).filter(function(r){return r.match(conf.blk);});
 			const resstring = lines.filter(function(l){
 				return l.match(/(.+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%/);
@@ -44,6 +68,7 @@ exports.test=function(conf, callback, callback_err, fails){
 				fails.push( exports.failDescription(conf, {testno: 1, test: "Формат выдаваемых сообщений", ip: conf.ssh}) );
 				callback('fail');
 			};
+			*/
 		});
 	}catch(e){
 		fails.push( exports.failDescription(conf, {testno: 0, test: "Наличие и работоспособность утилиты тестирования (ssh)"}) );
