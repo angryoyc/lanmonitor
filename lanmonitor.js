@@ -7,6 +7,7 @@ const async = require("async");
 const macros = {};
 const fails = [];
 const spawn = require('child_process').spawn;
+const print = require('./lib/print.js');
 
 const modules={
 	ping:   require("./modules/ping"),
@@ -15,14 +16,19 @@ const modules={
 	drbd: require("./modules/drbd")
 }
 
-//const points = [{cmd:'{emailviamobile} {email}', order:99}];
+process.env.COLOR=((process.argv[2] || '').toLowerCase()=='color=no')?'false':'true';
 
 const points = conf.predefined || [];
 
 // START !!!
 loadLastFails(function(lastfailslog, path){ // загружаем журнал предыдущей проверки
-	console.log('Last failslog items count: ' + lastfailslog.length);
+
+	print('Last failslog items count: ');
+	print(lastfailslog.length, 'red');
+	print('\n');
+
 	var index={};
+
 	if(lastfailslog.length>0){ // если журнал не пустой, то строим индекс
 		lastfailslog.forEach(function(f){
 			index[f.nodeid]=f;
@@ -112,12 +118,12 @@ function adminNotification(newfails, callback, callback_err){
 	}).forEach(function(a){
 		console.log('sendNotification');
 		sendNotification(a.docommands, a.fails, callback, function(err){
-				if(err){
-					console.log(err.join('\n'));
-					callback();
-				}else{
-					callback();
-				}
+			if(err){
+				console.log(err.join('\n'));
+				callback();
+			}else{
+				callback();
+			}
 		});
 		/*
 		async.forEach(

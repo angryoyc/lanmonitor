@@ -2,8 +2,8 @@
 const cf = require("cf");
 const moment = require("moment");
 const spawn = require('child_process').spawn;
-const ESC = '\x1b[';
 const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
+const print = require('../lib/print.js');
 
 exports.test=function(conf, callback, callback_err, fails){
 	const params = [conf.ssh, 'df'];
@@ -11,7 +11,7 @@ exports.test=function(conf, callback, callback_err, fails){
 		const ssh = spawn((conf.sys?conf.sys.ssh:'') || 'ssh' , params);
 		const rows = [];
 		const err_mess = [];
-		process.stdout.write('Test free space on ' + conf.ssh + ' : '  + conf.blk + ' ...');
+		print('Test free space on ' + conf.ssh + ' : '  + conf.blk + ' ...');
 		ssh.stdout.on('data', (r) => {
 			rows.push(r.toString());
 		});
@@ -25,19 +25,15 @@ exports.test=function(conf, callback, callback_err, fails){
 			})[0];
 			if(resstring){
 				const m = resstring.match(/(.+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\%/);
-				process.stdout.write( ' (' + m[5] + ' < ' + conf.threshold + ') ' );
+				print( ' (' + m[5] + ' < ' + conf.threshold + ') ' );
 				if(m[5]>conf.threshold){
-					process.stdout.write(ESC + '31m');
-					process.stdout.write('fail');
-					process.stdout.write(ESC + '0m');
+					print('fail', 'red');
 					fails.push( exports.failDescription(conf, {testno: 2, test: "Процент использованного пространства.", threshold: threshold, value: m[5], ssh: conf.ssh}) );
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+					if(conf.note) print('\t\t# ' + conf.note + '\n');
 					callback('fail');
 				}else{
-					process.stdout.write(ESC + '32m');
-					process.stdout.write('ok');
-					process.stdout.write(ESC + '0m');
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note + '\n');
+					print('ok', 'green');
+					if(conf.note) print('\t\t# ' + conf.note + '\n');
 					callback('ok');
 				};
 			}else{
@@ -50,7 +46,6 @@ exports.test=function(conf, callback, callback_err, fails){
 		callback('fail');
 	};
 };
-
 
 // Формирование записи об откаже. Первые 5 свойств обязательны.
 exports.failDescription=function(conf, data){

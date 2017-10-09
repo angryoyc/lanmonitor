@@ -2,48 +2,40 @@
 const cf = require("cf");
 const web = require("web");
 const moment = require("moment");
+const print = require('../lib/print.js');
 const spawn = require('child_process').spawn;
-const ESC = '\x1b[';
 const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
 
 exports.test=function(conf, callback, callback_err, fails){
-	process.stdout.write('Http request to URI ' + conf.url + ' ... ');
+	print('Http request to URI ' + conf.url + ' ... ');
 	const method = (conf.method || 'get').toLowerCase();
 	if(method=='get'){
 		web.get(conf.url)
 		.then(function(result){
 			if(conf.result && conf.result!=result){
-				process.stdout.write( ESC + '31m' );
-				process.stdout.write( 'fail' );
-				process.stdout.write( ESC + '0m' );
+				print( 'fail', 'red' );
 				fails.push( exports.failDescription(conf, {testno: 2, test: "Ответ не соответствует ожиданиям", url: conf.url, result: result, wasexpected: conf.result}) );
-				if(conf.note) process.stdout.write( '\t\t# ' + conf.note );
-				process.stdout.write('\n');
-				callback('fail');
+				if(conf.note) print( '\t\t# ' + conf.note );
+				print('\n');
+				callback('fail', 'red');
 			}else{
-				process.stdout.write( ESC + '32m' );
-				process.stdout.write( 'ok' );
-				process.stdout.write( ESC + '0m' );
-				if(conf.note) process.stdout.write('\t\t# ' + conf.note);
-				process.stdout.write('\n');
+				print( 'ok', 'green' );
+				if(conf.note) print('\t\t# ' + conf.note);
+				print('\n');
 				callback('ok');
 			};
 		}, function(err){
-			process.stdout.write( ESC + '31m' );
-			process.stdout.write( 'fail' );
-			process.stdout.write( ESC + '0m' );
+			print( 'fail', 'red' );
 			fails.push( exports.failDescription(conf, {testno: 1, test: "Запрос не выполнен", url: conf.url, message:err.message }) );
-			if(conf.note) process.stdout.write( '\t\t# ' + conf.note );
-			process.stdout.write('\n');
+			if(conf.note) print( '\t\t# ' + conf.note );
+			print('\n');
 			callback('fail');
 		});
 	}else{
-		process.stdout.write( ESC + '31m' );
-		process.stdout.write( 'fail' );
-		process.stdout.write( ESC + '0m' );
+		print( 'fail', 'red' );
 		fails.push( exports.failDescription(conf, {testno: 0, test: "Формат данных узла" }) );
-		if(conf.note) process.stdout.write('\t\t# ' + conf.note );
-		process.stdout.write('\n');
+		if(conf.note) print('\t\t# ' + conf.note );
+		print('\n');
 		callback('fail');
 	};
 };

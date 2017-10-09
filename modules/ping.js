@@ -1,8 +1,8 @@
 #!/usr/bin/node
 const cf = require("cf");
 const moment = require("moment");
+const print = require('../lib/print.js');
 const spawn = require('child_process').spawn;
-const ESC = '\x1b[';
 const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
 
 exports.test=function(conf, callback, callback_err, fails){
@@ -11,7 +11,7 @@ exports.test=function(conf, callback, callback_err, fails){
 		const ping = spawn((conf.sys?conf.sys.ping:'') || 'ping' , params);
 		const rows = [];
 		const err_mess = [];
-		process.stdout.write('Pinging to host ' + conf.ip + ' ... ');
+		print('Pinging to host ' + conf.ip + ' ... ');
 		ping.stdout.on('data', (r) => {
 			rows.push(r.toString());
 		});
@@ -26,19 +26,15 @@ exports.test=function(conf, callback, callback_err, fails){
 			if(resstring){
 				const m=resstring.match(/(\d+)\% packet loss/);
 				if(m[1]>threshold){
-					process.stdout.write(ESC + '31m');
-					process.stdout.write('fail');
-					process.stdout.write(ESC + '0m');
+					print('fail', 'red');
 					fails.push( exports.failDescription(conf, {testno: 2, test: "Количество потерянных пакетов.", threshold: threshold, value: m[1], ip: conf.ip}) );
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note );
-					process.stdout.write('\n');
+					if(conf.note) print('\t\t# ' + conf.note );
+					print('\n');
 					callback('fail');
 				}else{
-					process.stdout.write(ESC + '32m');
-					process.stdout.write('ok');
-					process.stdout.write(ESC + '0m');
-					if(conf.note) process.stdout.write('\t\t# ' + conf.note );
-					process.stdout.write('\n');
+					print('ok', 'green');
+					if(conf.note) print('\t\t# ' + conf.note );
+					print('\n');
 					callback('ok');
 				};
 			}else{
