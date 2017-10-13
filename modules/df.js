@@ -2,7 +2,6 @@
 const cf = require("cf");
 const moment = require("moment");
 const spawn = require('child_process').spawn;
-const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
 const print = require('../lib/print.js');
 
 exports.test=function(conf, callback, callback_err, fails){
@@ -28,7 +27,7 @@ exports.test=function(conf, callback, callback_err, fails){
 				print( ' (' + m[5] + ' < ' + conf.threshold + ') ' );
 				if(m[5]>conf.threshold){
 					print('fail', 'red');
-					fails.push( exports.failDescription(conf, {testno: 2, test: "Процент использованного пространства.", threshold: threshold, value: m[5], ssh: conf.ssh}) );
+					fails.push( exports.failDescription(conf, {testno: 2, test: "Процент использованного пространства.", threshold: conf.threshold, value: m[5], ssh: conf.ssh}) );
 					if(conf.note) print('\t\t# ' + conf.note + '\n');
 					callback('fail');
 				}else{
@@ -54,6 +53,7 @@ exports.failDescription=function(conf, data){
 		failstatus: conf.failstatus,
 		type: conf.type,
 		dt: new Date(),
+		threshold: conf.threshold,
 		module: exports,
 		testresult: data
 	};
@@ -66,7 +66,7 @@ exports.makeLogRecord=function(fail){
 	}else if(fail.testresult.testno==1){
 		return  format(fail.dt) +  ' ssh df ' + fail.testresult.ssh  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' не распознан ' + fail.testresult.value + ' status: failed';
 	}else if(fail.testresult.testno==2){
-		return format(fail.dt) +  ' ssh df to ' + fail.testresult.ssh  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' порог: ' + threshold + ' значение: ' + fail.testresult.value + ' status: failed';
+		return format(fail.dt) +  ' ssh df to ' + fail.testresult.ssh  + ' :: ' + fail.failstatus + ' :: ' + fail.testresult.test + ' порог: ' + fail.threshold + ' значение: ' + fail.testresult.value + ' status: failed';
 	}else{
 		return format(fail.dt) +  ' ssh df status: failed';
 	};

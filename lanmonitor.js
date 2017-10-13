@@ -116,7 +116,7 @@ function adminNotification(newfails, callback, callback_err){
 	conf.admins.filter(function(a){ // Отправляем оповещения
 		return (a.fails.length>0);
 	}).forEach(function(a){
-		console.log('sendNotification');
+		console.log('Send notification to ' + a.fio);
 		sendNotification(a.docommands, a.fails, callback, function(err){
 			if(err){
 				console.log(err.join('\n'));
@@ -246,7 +246,7 @@ function doNode(node, callback, callback_err){
 		if(node.cmd){
 			process.stdout.write('Add alert point: ' + node.cmd + '\n');
 			points.push({cmd: node.cmd, order: (node.order || 0)});
-		}
+		};
 		callback('ok');
 	}else if(node.type in modules){
 		var act = modules[node.type];
