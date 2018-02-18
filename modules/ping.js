@@ -6,7 +6,7 @@ const spawn = require('child_process').spawn;
 const threshold = 50; // максимально допустимое количество потерянных пакетов (%)
 
 exports.test=function(conf, callback, callback_err, fails){
-	const params = [conf.ip, '-c', 2];
+	const params = [conf.ip, '-c', 5];
 	try{
 		const ping = spawn((conf.sys?conf.sys.ping:'') || 'ping' , params);
 		const rows = [];
