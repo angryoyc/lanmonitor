@@ -15,6 +15,7 @@
   },
   "keywords": [],
   "dependencies": {
+    "pg": "^7.4.3",
     "async": "0",
     "cf": "git+https://github.com/angryoyc/cf.git",
     "delivery": "git+https://github.com/angryoyc/delivery.git",
